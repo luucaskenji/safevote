@@ -1,7 +1,8 @@
 const voteSchema = require('../schemas/votes');
 const { validate } = require('gerador-validador-cpf');
+const Candidate = require('../models/Candidate');
 
-function postVote(req, res) {
+async function postVote(req, res) {
     const { candidateNumber, cpf } = req.body;
     
     if (!candidateNumber || !cpf) return res.status(400).send('Fields missing');
@@ -10,7 +11,11 @@ function postVote(req, res) {
         return res.status(422).send('Data in wrong pattern');
     }
 
-    res.status(200).send('OK');
+    const requiredCandidate = await Candidate.findOne({ where: { number: candidateNumber } });
+
+    if (!requiredCandidate) return res.status(403).send('Candidate not found');
+
+    res.sendStatus(201);
 }
 
 module.exports = { postVote }
