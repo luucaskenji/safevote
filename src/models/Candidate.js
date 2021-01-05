@@ -1,6 +1,5 @@
 const { Sequelize } = require('sequelize');
 const sequelize = require('../utils/database');
-const Vote = require('./Vote');
 
 class Candidate extends Sequelize.Model {}
 
@@ -22,6 +21,5 @@ Candidate.init(
     }
 );
 
-Candidate.hasMany(Vote)
 
 module.exports = Candidate;

@@ -7,7 +7,7 @@ const Vote = require('../models/Vote');
 async function postVote(req, res) {
     const { candidateNumber, cpf } = req.body;
     
-    if (!candidateNumber || !cpf) return res.status(400).send('Fields missing');
+    // if (!candidateNumber || !cpf) return res.status(400).send('Fields missing');
 
     if (voteSchema.validate(req.body).error || !validate(req.body.cpf)) {
         return res.status(422).send('Data in wrong pattern');
@@ -23,17 +23,20 @@ async function postVote(req, res) {
 }
 
 async function getVotes(req, res) {
-    const votes = await Candidate.findAll({
+    const votes = await Vote.findAll({
         raw: true,
-        group: ['"votes.candidateId"', 'name', 'number'],
-        attributes: ['number', 'name', [Sequelize.fn('COUNT', 'votes.cpf'), 'numberOfVotes']],
+        group: ['"candidateId"', 'candidate.name', 'candidate.number'],
+        attributes: ['candidate.number', 'candidate.name', [Sequelize.fn('COUNT', 'cpf'), 'numberOfVotes']],
         include: [
             {
-                model: Vote,
-                attributes: []
+                model: Candidate,
+                attributes: [],
+                required: true
             }
         ]
     });
+
+    console.log(votes);
 
     res.status(200).send(votes);
 }

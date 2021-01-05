@@ -8,11 +8,9 @@ async function postCandidate(req, res) {
         return res.status(422).send('Fields missing or data in wrong pattern');
     }
 
-    const isRepeated = await Candidate.findOne({ where: { number } });
+    const [candidate, hasBeenCreated] = await Candidate.findOrCreate({ where: { number, name } });
 
-    if (isRepeated) return res.status(409).send('Repeated number');
-
-    await Candidate.create({ number, name });
+    if (!hasBeenCreated) return res.status(409).send('Repeated number');
 
     res.sendStatus(201);
 }

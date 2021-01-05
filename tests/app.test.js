@@ -12,7 +12,7 @@ const db = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
 
-beforeAll(async () => {
+beforeEach(async () => {
   await db.query("DELETE FROM votes;");
   await db.query("DELETE FROM candidates;");
 });
