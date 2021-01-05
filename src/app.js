@@ -9,7 +9,10 @@ app.use(cors());
 app.use(express.json());
 
 const votesController = require('./controllers/votesController');
+const candidatesController = require('./controllers/candidatesController');
 
 app.post('/votes', votesController.postVote);
+
+app.post('/candidates', candidatesController.postCandidate);
 
 module.exports = app;
