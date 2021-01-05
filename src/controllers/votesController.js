@@ -1,3 +1,4 @@
+const { Sequelize } = require('sequelize');
 const voteSchema = require('../schemas/votes');
 const { validate } = require('gerador-validador-cpf');
 const Candidate = require('../models/Candidate');
@@ -21,4 +22,20 @@ async function postVote(req, res) {
     res.sendStatus(201);
 }
 
-module.exports = { postVote };
+async function getVotes(req, res) {
+    const votes = await Candidate.findAll({
+        raw: true,
+        group: ['"votes.candidateId"', 'name', 'number'],
+        attributes: ['number', 'name', [Sequelize.fn('COUNT', 'votes.cpf'), 'numberOfVotes']],
+        include: [
+            {
+                model: Vote,
+                attributes: []
+            }
+        ]
+    });
+
+    res.status(200).send(votes);
+}
+
+module.exports = { postVote, getVotes};

@@ -12,6 +12,7 @@ const votesController = require('./controllers/votesController');
 const candidatesController = require('./controllers/candidatesController');
 
 app.post('/votes', votesController.postVote);
+app.get('/votes', votesController.getVotes);
 
 app.post('/candidates', candidatesController.postCandidate);
 
