@@ -1,6 +1,7 @@
 const voteSchema = require('../schemas/votes');
 const { validate } = require('gerador-validador-cpf');
 const Candidate = require('../models/Candidate');
+const Vote = require('../models/Vote');
 
 async function postVote(req, res) {
     const { candidateNumber, cpf } = req.body;
@@ -14,6 +15,8 @@ async function postVote(req, res) {
     const requiredCandidate = await Candidate.findOne({ where: { number: candidateNumber } });
 
     if (!requiredCandidate) return res.status(403).send('Candidate not found');
+
+    await Vote.create({ candidateId: requiredCandidate.dataValues.id, cpf });
 
     res.sendStatus(201);
 }
